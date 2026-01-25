@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { generateImpactVision } from '../services/geminiService';
 import { ImpactStory } from '../types';
