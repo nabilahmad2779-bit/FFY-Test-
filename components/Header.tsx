@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { NavSection } from '../types';
 import { Leaf, Menu, X, Heart } from 'lucide-react';
