@@ -446,28 +446,16 @@ const NeuralNexusCommand: React.FC<NeuralNexusCommandProps> = ({ onNav, onDownlo
   );
 };
 
-// --- DATA: DEPARTMENTS ---
+// --- DATA: DEPARTMENTS (Updated Order and Imperial Topaz Theme) ---
 
 const DEPARTMENT_LIST = [
-  {
-    id: "ops",
-    name: "Operations",
-    icon: <Settings className="w-8 h-8 md:w-10 md:h-10" />,
-    tagline: "Systemic Efficiency",
-    description: "Orchestrating core logistical frameworks and high-fidelity event execution protocols.",
-    colorClass: "text-[#ffd700] border-[#ffd700]/20 bg-[#ffd700]/5 shadow-[#ffd700]/10",
-    accent: "#ffd700",
-    lead: "Logistics Directorate",
-    work: "Handling all back-end arrangements, venue management, equipment procurement, and on-ground execution timelines for major events.",
-    impact: "Successful coordination of over 10+ major youth festivals with zero logistical downtime."
-  },
   {
     id: "hr",
     name: "Human Resources",
     icon: <Users className="w-8 h-8 md:w-10 md:h-10" />,
     tagline: "Cultivating Talent",
     description: "Directing the recruitment pipeline and volunteer lifecycle management.",
-    colorClass: "text-[#bf00ff] border-[#bf00ff]/20 bg-[#bf00ff]/5 shadow-[#bf00ff]/10",
+    colorClass: "text-[#bf00ff] border-[#bf00ff]/20 bg-[#bf00ff]/5 shadow-[#bf00ff]/10 hover:shadow-[0_0_40px_#bf00ff60] hover:border-[#bf00ff]/60",
     accent: "#bf00ff",
     lead: "Durrah Mehnaz Arshi",
     work: "Overseeing the recruitment cycle, member training modules, and maintaining institutional harmony across all departments.",
@@ -479,23 +467,11 @@ const DEPARTMENT_LIST = [
     icon: <Megaphone className="w-8 h-8 md:w-10 md:h-10" />,
     tagline: "Voice of Forte-FY",
     description: "Managing external communications and official digital presence.",
-    colorClass: "text-[#ff0000] border-[#ff0000]/20 bg-[#ff0000]/5 shadow-[#ff0000]/10",
+    colorClass: "text-[#ff0000] border-[#ff0000]/20 bg-[#ff0000]/5 shadow-[#ff0000]/10 hover:shadow-[0_0_40px_#ff000060] hover:border-[#ff0000]/60",
     accent: "#ff0000",
     lead: "Director of Communications",
     work: "Building strategic alliances with other clubs and organizations, handling media coverage, and brand positioning.",
     impact: "Secured partnerships with 30+ educational institutions and corporate sponsors like Nagad."
-  },
-  {
-    id: "acad",
-    name: "Academics",
-    icon: <GraduationCap className="w-8 h-8 md:w-10 md:h-10" />,
-    tagline: "Knowledge Forge",
-    description: "Ensuring educational excellence through high-impact curriculum orchestration.",
-    colorClass: "text-[#00a2ff] border-[#00a2ff]/20 bg-[#00a2ff]/5 shadow-[#00a2ff]/10",
-    accent: "#00a2ff",
-    lead: "Dean of Academic Affairs",
-    work: "Designing skill-building workshops, seminars, and competitive syllabi for our flagship events like Mosaic Stories.",
-    impact: "Delivered 50+ hours of educational content impacting thousands of students nationwide."
   },
   {
     id: "it",
@@ -503,13 +479,139 @@ const DEPARTMENT_LIST = [
     icon: <Laptop className="w-8 h-8 md:w-10 md:h-10" />,
     tagline: "Technical Backbone",
     description: "Architecting the digital infrastructure to power youth-led initiatives.",
-    colorClass: "text-[#00f7ff] border-[#00f7ff]/20 bg-[#00f7ff]/5 shadow-[#00f7ff]/10",
+    colorClass: "text-[#00f7ff] border-[#00f7ff]/20 bg-[#00f7ff]/5 shadow-[#00f7ff]/10 hover:shadow-[0_0_40px_#00f7ff60] hover:border-[#00f7ff]/60",
     accent: "#00f7ff",
     lead: "Chief Technical Officer",
     work: "Building digital portals, maintaining databases, and ensuring the technical robustness of our online platforms and registrations.",
     impact: "Seamlessly processed 10,000+ digital registrations and maintained 100% server uptime."
+  },
+  {
+    id: "ops",
+    name: "Operations",
+    icon: <Settings className="w-8 h-8 md:w-10 md:h-10" />,
+    tagline: "Systemic Efficiency",
+    description: "Orchestrating core logistical frameworks and high-fidelity event execution protocols.",
+    // Imperial Topaz Theme - Rich Golden Orange #FF8C00
+    colorClass: "text-[#FF8C00] border-[#FF8C00]/20 bg-[#FF8C00]/5 shadow-[#FF8C00]/10 hover:shadow-[0_0_40px_#FF8C0060] hover:border-[#FF8C00]/60",
+    accent: "#FF8C00",
+    lead: "Logistics Directorate",
+    work: "Handling all back-end arrangements, venue management, equipment procurement, and on-ground execution timelines for major events.",
+    impact: "Successful coordination of over 10+ major youth festivals with zero logistical downtime."
+  },
+  {
+    id: "acad",
+    name: "Academics",
+    icon: <GraduationCap className="w-8 h-8 md:w-10 md:h-10" />,
+    tagline: "Knowledge Forge",
+    description: "Ensuring educational excellence through high-impact curriculum orchestration.",
+    colorClass: "text-[#00a2ff] border-[#00a2ff]/20 bg-[#00a2ff]/5 shadow-[#00a2ff]/10 hover:shadow-[0_0_40px_#00a2ff60] hover:border-[#00a2ff]/60",
+    accent: "#00a2ff",
+    lead: "Dean of Academic Affairs",
+    work: "Designing skill-building workshops, seminars, and competitive syllabi for our flagship events like Mosaic Stories.",
+    impact: "Delivered 50+ hours of educational content impacting thousands of students nationwide."
   }
 ];
+
+// --- ADVANCED 3D DEPARTMENT CARD COMPONENT ---
+
+const DepartmentCard: React.FC<{ dept: typeof DEPARTMENT_LIST[0]; navigate: (path: string) => void }> = ({ dept, navigate }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+  const [spotlight, setSpotlight] = useState({ x: 50, y: 50, opacity: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Spotlight position (percentage)
+    setSpotlight({ x: (x / rect.width) * 100, y: (y / rect.height) * 100, opacity: 1 });
+
+    // 3D Tilt calculation
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10; // Max tilt -10 to 10 deg
+    const rotateY = ((x - centerX) / centerX) * 10;
+    
+    setRotation({ x: rotateX, y: rotateY });
+  };
+
+  const handleMouseLeave = () => {
+    setRotation({ x: 0, y: 0 });
+    setSpotlight(prev => ({ ...prev, opacity: 0 }));
+  };
+
+  return (
+    <div 
+      className="relative group h-full"
+      style={{ perspective: '1000px' }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={() => navigate(`/departments/${dept.id}`)}
+    >
+      <div 
+        ref={cardRef}
+        className={`relative h-full w-full rounded-2xl md:rounded-[2.5rem] transition-transform duration-100 ease-out border cursor-pointer overflow-hidden ${dept.colorClass}`} 
+        style={{ 
+          transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
+          transformStyle: 'preserve-3d',
+          backgroundColor: '#0a0a0a' 
+        }}
+      >
+         {/* Gradient Border Rotation - Background Spin */}
+         <div 
+            className="absolute -inset-[150%] opacity-0 group-hover:opacity-40 transition-opacity duration-700 -z-20 pointer-events-none"
+            style={{
+                background: `conic-gradient(from 0deg, transparent, ${dept.accent}, transparent)`,
+                animation: 'spin-border 4s linear infinite'
+            }}
+         />
+         <style>{`@keyframes spin-border { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+
+         {/* Inner Content Background Mask */}
+         <div className="absolute inset-[1.5px] rounded-[2.4rem] bg-[#050505] -z-10" />
+
+         {/* Spotlight Reveal Overlay */}
+         <div 
+            className="absolute inset-0 pointer-events-none rounded-[2.5rem] transition-opacity duration-500 z-0 mix-blend-screen"
+            style={{
+                background: `radial-gradient(circle at ${spotlight.x}% ${spotlight.y}%, ${dept.accent}25, transparent 65%)`,
+                opacity: spotlight.opacity
+            }}
+         />
+
+         {/* Content Container (Layer Separation) */}
+         <div className="relative z-10 p-7 md:p-10 flex flex-col h-full" style={{ transformStyle: 'preserve-3d' }}>
+            
+            {/* Layer 1: Icon & Primary Header - Highest translation */}
+            <div className="transition-transform duration-300 group-hover:translate-z-12" style={{ transform: 'translateZ(40px)' }}>
+               <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-white/5 flex items-center justify-center mb-5 md:mb-8 border border-white/5 shadow-inner shrink-0" style={{ color: dept.accent }}>
+                 {dept.icon}
+               </div>
+               <h4 className="text-[8px] md:text-[10px] font-black uppercase tracking-widest mb-1.5 md:mb-3 opacity-60 leading-none">{dept.tagline}</h4>
+               <h3 className="text-xl md:text-2xl font-heading font-black text-white italic tracking-tight mb-3 md:mb-6">{dept.name}</h3>
+            </div>
+
+            {/* Layer 2: Description text - Moderate translation */}
+            <p className="text-zinc-500 text-xs md:text-sm font-light leading-relaxed mb-6 md:mb-8 transition-transform duration-300" style={{ transform: 'translateZ(25px)' }}>{dept.description}</p>
+            
+            {/* Layer 3: Bottom meta - Low translation */}
+            <div className="mt-auto pt-5 flex items-center justify-between opacity-30 group-hover:opacity-100 transition-opacity" style={{ transform: 'translateZ(15px)' }}>
+               <span className="text-[7px] md:text-[8px] font-black uppercase tracking-widest">Structural Nexus</span>
+               <div className="w-8 md:w-10 h-0.5" style={{ backgroundColor: dept.accent }} />
+            </div>
+
+            {/* Corner Brackets Animation Overlay */}
+            <div className={`absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out group-hover:translate-x-4 group-hover:translate-y-4 -translate-x-2 -translate-y-2`} style={{ borderColor: dept.accent }} />
+            <div className={`absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out group-hover:-translate-x-4 group-hover:translate-y-4 translate-x-2 -translate-y-2`} style={{ borderColor: dept.accent }} />
+            <div className={`absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out group-hover:translate-x-4 group-hover:-translate-y-4 -translate-x-2 translate-y-2`} style={{ borderColor: dept.accent }} />
+            <div className={`absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out group-hover:-translate-x-4 group-hover:-translate-y-4 translate-x-2 translate-y-2`} style={{ borderColor: dept.accent }} />
+         </div>
+      </div>
+    </div>
+  );
+};
 
 const DepartmentsSection: React.FC<{ navigate: (path: string) => void }> = ({ navigate }) => {
   return (
@@ -521,22 +623,8 @@ const DepartmentsSection: React.FC<{ navigate: (path: string) => void }> = ({ na
         </ScrollReveal>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
           {DEPARTMENT_LIST.map((dept, i) => (
-            <ScrollReveal key={i} delay={i * 100}>
-              <div 
-                onClick={() => navigate(`/departments/${dept.id}`)}
-                className={`h-full group border p-7 md:p-10 rounded-2xl md:rounded-[2.5rem] transition-all duration-500 flex flex-col relative overflow-hidden cursor-pointer ${dept.colorClass} hover:brightness-110 shadow-lg`}
-              >
-                <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-white/5 flex items-center justify-center mb-5 md:mb-8 border border-white/5 shadow-inner shrink-0" style={{ color: dept.accent }}>
-                  {dept.icon}
-                </div>
-                <h4 className="text-[8px] md:text-[10px] font-black uppercase tracking-widest mb-1.5 md:mb-3 opacity-60 leading-none">{dept.tagline}</h4>
-                <h3 className="text-xl md:text-2xl font-heading font-black text-white italic tracking-tight mb-3 md:mb-6">{dept.name}</h3>
-                <p className="text-zinc-500 text-xs md:text-sm font-light leading-relaxed mb-6 md:mb-8">{dept.description}</p>
-                <div className="mt-auto pt-5 flex items-center justify-between opacity-30 group-hover:opacity-100 transition-opacity">
-                  <span className="text-[7px] md:text-[8px] font-black uppercase tracking-widest">Core Domain 0{i+1}</span>
-                  <div className="w-8 md:w-10 h-0.5" style={{ backgroundColor: dept.accent }} />
-                </div>
-              </div>
+            <ScrollReveal key={i} delay={i * 100} className="h-full">
+               <DepartmentCard dept={dept} navigate={navigate} />
             </ScrollReveal>
           ))}
         </div>
@@ -629,7 +717,7 @@ const HomeView: React.FC<{ navigate: (path: string) => void; handleDownload: () 
                       <h4 className="text-2xl md:text-5xl font-heading font-black italic uppercase text-white mb-4 md:mb-6 leading-tight">May 26, 2022. <br/><span className="text-cyan-500">The Initiation.</span></h4>
                       <div className="space-y-4 md:space-y-5 text-zinc-500 text-sm md:text-lg lg:text-xl font-light leading-relaxed">
                         <p>Forte-FY began with a singular focus: bridging the gap between raw talent and professional execution. Founded in Dhaka, we established a sanctuary where learning is intentional.</p>
-                        <p>We believe that youth empowerment requires more than recognition—it requires consistent investment in systemic skill-building.</p>
+                        <p>We believe that youth empowerment requires more than recognition—it requires consistent investment in systemic skill-building. Our mission is to manufacture a generation of accomplished individuals through rigorous skill elevation.</p>
                       </div>
                    </div>
                    <div className="border-l-2 md:border-l-3 border-cyan-500 pl-6 lg:pl-10 relative text-left">
@@ -795,7 +883,7 @@ const HomeView: React.FC<{ navigate: (path: string) => void; handleDownload: () 
   );
 };
 
-// --- NEW PAGE: DEPARTMENTS VIEW ---
+// --- NEW PAGE: DEPARTMENTS VIEW (Updated to use DepartmentCard) ---
 
 const DepartmentsView: React.FC<{ navigate: (path: string) => void }> = ({ navigate }) => {
   return (
@@ -815,21 +903,8 @@ const DepartmentsView: React.FC<{ navigate: (path: string) => void }> = ({ navig
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {DEPARTMENT_LIST.map((dept, i) => (
-            <ScrollReveal key={dept.id} delay={i * 100}>
-              <div 
-                onClick={() => navigate(`/departments/${dept.id}`)}
-                className={`h-full group border p-10 md:p-12 rounded-[2.5rem] md:rounded-[3rem] transition-all duration-700 flex flex-col items-center relative overflow-hidden cursor-pointer ${dept.colorClass} hover:brightness-110 shadow-2xl hover:-translate-y-2`}
-              >
-                <div className="w-20 h-20 rounded-[2rem] bg-white/5 flex items-center justify-center mb-10 border border-white/5 shadow-inner transition-transform group-hover:scale-110" style={{ color: dept.accent }}>
-                  {dept.icon}
-                </div>
-                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] mb-4 opacity-50 leading-none">{dept.tagline}</h4>
-                <h3 className="text-3xl font-heading font-black text-white italic tracking-tight mb-8">{dept.name}</h3>
-                <p className="text-zinc-500 text-sm md:text-base font-light leading-relaxed mb-10 text-center">
-                  {dept.description}
-                </p>
-                <button className="mt-auto px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-[9px] font-black uppercase tracking-widest transition-all">Explore Department</button>
-              </div>
+            <ScrollReveal key={dept.id} delay={i * 100} className="h-full">
+              <DepartmentCard dept={dept} navigate={navigate} />
             </ScrollReveal>
           ))}
         </div>
