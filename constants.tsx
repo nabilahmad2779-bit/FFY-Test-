@@ -1,4 +1,3 @@
-
 import { EventData, Collaboration, Member, Department } from './types';
 
 export const HERO_IMAGE_URL = 'https://i.postimg.cc/Nf2dQJwn/IMG_7751.jpg?auto=format&fit=crop&q=80&w=1920';
