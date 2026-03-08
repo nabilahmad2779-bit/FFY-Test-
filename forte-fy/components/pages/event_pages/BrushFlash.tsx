@@ -341,6 +341,12 @@ export const BrushFlash: React.FC<EventPageProps> = ({ isDark, onBack }) => {
                         </p>
                      </div>
                      <div className={`w-full md:w-4/12 ${disc.aspect} overflow-hidden rounded-[2.5rem] border-2 shadow-2xl relative group`} style={{ borderColor: `${disc.color}80`, boxShadow: `0 0 50px ${disc.accent}` }}>
+                        {/* Signature Badge */}
+                        {disc.id === 'traditional-art' && (
+                           <div className="absolute top-6 right-6 z-20 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-[#f4d03f] text-[#f4d03f] text-[10px] font-black uppercase tracking-widest shadow-lg animate-pulse">
+                              Signature Discipline
+                           </div>
+                        )}
                         <img src={disc.imageUrl} alt={disc.title} className="disc-img w-full h-full object-cover scale-110 group-hover:scale-125 transition-transform duration-1000" referrerPolicy="no-referrer" />
                         <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-t from-black/40' : 'bg-gradient-to-t from-black/20'} to-transparent`} />
                      </div>
