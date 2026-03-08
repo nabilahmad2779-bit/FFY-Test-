@@ -219,16 +219,16 @@ export const BrushFlashLight: React.FC<EventPageProps> = ({ onBack }) => {
                <h2 className="text-xs font-black uppercase tracking-[0.3em] text-black/40">Performance Metrics</h2>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
                {[
-                  { val: "86000", suffix: "+", label: "Visual Impressions", color: "text-[#f4d03f]", icon: Globe },
-                  { val: "352", suffix: "", label: "Artists Exhibited", color: "text-[#ff007f]", icon: MapPin },
+                  { val: "86000", suffix: "+", label: "Impressions", color: "text-[#f4d03f]", icon: Globe },
+                  { val: "352", suffix: "", label: "Artists", color: "text-[#ff007f]", icon: MapPin },
                   { val: "42", suffix: "", label: "Curators", color: "text-[#00ffff]", icon: Users },
                   { val: "2022", suffix: "", label: "Cycle", color: "text-black", icon: Calendar },
                ].map((stat, i) => (
-                  <div key={i} className="fade-up flex flex-col items-center justify-center bg-[#f8f8f8] p-6 rounded-[1.5rem] border border-black/5 shadow-lg aspect-square">
-                     <stat.icon size={18} className={`${stat.color} mb-3 opacity-80`} />
-                     <h3 className={`text-3xl font-black tracking-tighter mb-1 ${stat.color}`}>
+                  <div key={i} className="fade-up flex flex-col items-center justify-center bg-[#f8f8f8] p-4 rounded-2xl border border-black/5 shadow-md">
+                     <stat.icon size={16} className={`${stat.color} mb-2 opacity-80`} />
+                     <h3 className={`text-2xl font-black tracking-tighter mb-0.5 ${stat.color}`}>
                         <span className="count-up" data-value={stat.val} data-suffix={stat.suffix}>0</span>
                      </h3>
                      <p className="text-[8px] font-black uppercase tracking-[0.2em] text-black/60 text-center">{stat.label}</p>
@@ -247,22 +247,39 @@ export const BrushFlashLight: React.FC<EventPageProps> = ({ onBack }) => {
          
          <div className="flex w-[300%] h-full">
             {DISCIPLINES.map((disc, idx) => (
-               <div key={disc.id} className="modality-card w-[100vw] h-full flex flex-col items-center justify-center px-8 pt-32 pb-16 relative shrink-0">
-                  <div className="w-full max-w-sm aspect-[3/4] rounded-[2.5rem] overflow-hidden border-2 relative mb-8 shadow-2xl" style={{ borderColor: `${disc.color}60`, boxShadow: `0 0 40px ${disc.accent}` }}>
-                     <img src={disc.imageUrl} alt={disc.title} className="w-full h-full object-cover" />
-                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                     <div className="absolute bottom-8 left-8 right-8">
-                        <h3 className="text-4xl font-black uppercase tracking-tighter text-white mb-3" style={{ textShadow: `0 0 20px ${disc.color}` }}>
+               <div key={disc.id} className="modality-card w-[100vw] h-full flex flex-col items-center justify-center px-6 pt-24 pb-16 relative shrink-0">
+                  
+                  {/* Card Container */}
+                  <div className="w-full max-w-sm aspect-[3/4] rounded-[2.5rem] overflow-hidden border-2 relative mb-6 shadow-[0_20px_50px_rgba(0,0,0,0.15)] group transition-all duration-500 hover:scale-[1.02]" style={{ borderColor: `${disc.color}`, boxShadow: `0 10px 40px ${disc.accent}` }}>
+                     
+                     {/* Signature Badge */}
+                     {disc.id === 'traditional-art' && (
+                        <div className="absolute top-4 right-4 z-20 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md border border-[#f4d03f] text-[#f4d03f] text-[8px] font-black uppercase tracking-widest shadow-lg animate-pulse">
+                           Signature
+                        </div>
+                     )}
+
+                     <img src={disc.imageUrl} alt={disc.title} className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-1000" />
+                     
+                     {/* Gradient Overlay */}
+                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                     
+                     {/* Content Overlay */}
+                     <div className="absolute bottom-0 left-0 w-full p-8">
+                        <div className="h-1 w-12 rounded-full mb-4" style={{ backgroundColor: disc.color }} />
+                        <h3 className="text-4xl font-black uppercase tracking-tighter text-white mb-3 leading-none drop-shadow-lg">
                            {disc.title}
                         </h3>
-                        <p className="text-sm text-white/90 font-light leading-relaxed">
+                        <p className="text-sm text-white/90 font-medium leading-relaxed drop-shadow-md">
                            {disc.description}
                         </p>
                      </div>
                   </div>
+
+                  {/* Pagination Dots */}
                   <div className="flex gap-2">
                      {DISCIPLINES.map((_, i) => (
-                        <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === idx ? 'bg-[#ff007f] w-6' : 'bg-gray-600'}`} />
+                        <div key={i} className={`h-2 rounded-full transition-all duration-300 ${i === idx ? 'w-8' : 'w-2 bg-black/20'}`} style={{ backgroundColor: i === idx ? disc.color : '' }} />
                      ))}
                   </div>
                </div>
