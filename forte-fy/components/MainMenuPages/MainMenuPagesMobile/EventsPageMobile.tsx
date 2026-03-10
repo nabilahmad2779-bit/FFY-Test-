@@ -1,9 +1,9 @@
-
-import React from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import { FORTE_EVENTS } from '../../../constants.tsx';
-import ScrollReveal from '../../ScrollReveal.tsx';
 import SmartImage from '../../SmartImage.tsx';
-import { ChevronRight, Calendar, Target, Users, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
+import { gsap } from 'gsap';
+import { EventsPageMobileLight } from './MobileMenuLight/EventsPageMobileLight.tsx';
 
 interface EventsPageMobileProps {
   isDark: boolean;
@@ -11,76 +11,96 @@ interface EventsPageMobileProps {
 }
 
 export const EventsPageMobile: React.FC<EventsPageMobileProps> = ({ isDark, navigate }) => {
-  const textCyan = isDark ? 'text-cyan-500' : 'text-cyan-700';
-  const cardBg = isDark ? 'bg-black' : 'bg-white';
-  const borderColor = isDark ? 'border-white/10' : 'border-slate-200';
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (isDark) {
+      const ctx = gsap.context(() => {
+          gsap.fromTo(".archive-col", 
+              { x: '-100%', opacity: 0 },
+              { x: '0%', opacity: 1, duration: 1, stagger: 0.1, ease: "power3.out" }
+          );
+          gsap.fromTo(".archive-header",
+              { opacity: 0, y: -20 },
+              { opacity: 1, y: 0, duration: 0.8, delay: 0.5 }
+          );
+      }, containerRef);
+      return () => ctx.revert();
+    }
+  }, [isDark]);
+
+  if (!isDark) {
+    return <EventsPageMobileLight navigate={navigate} />;
+  }
+
+  const handleEventClick = (eventId: string) => {
+    if (expandedId === eventId) {
+      navigate(`/events/${eventId}`);
+    } else {
+      setExpandedId(eventId);
+    }
+  };
 
   return (
-    <div className={`pb-24 pt-24 px-6 min-h-screen ${isDark ? 'bg-black text-white' : 'bg-slate-50 text-slate-900'} animate-fade-in`}>
-      <ScrollReveal className="mb-12">
-        <span className={`text-[10px] font-black uppercase tracking-[0.4em] mb-2 block ${textCyan}`}>Strategic Progression</span>
-        <h1 className="text-5xl font-heading font-black uppercase italic tracking-tighter leading-[0.85]">
-          The <br/><span className={textCyan}>Archive.</span>
-        </h1>
-        <div className={`w-16 h-1.5 mt-6 rounded-full ${isDark ? 'bg-cyan-500' : 'bg-cyan-600'}`} />
-      </ScrollReveal>
-
-      <div className="space-y-12">
-        {FORTE_EVENTS.map((event, i) => (
-          <ScrollReveal key={event.id} delay={i * 100}>
-            <div 
-              className={`rounded-[2.5rem] overflow-hidden border transition-all duration-300 relative group active:scale-[0.98] shadow-lg ${cardBg} ${borderColor}`}
-              onClick={() => navigate(`/events/${event.id}`)}
-            >
-              {/* Image Section */}
-              <div className="relative aspect-[4/3]">
-                <SmartImage src={event.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={event.name} />
-                <div className={`absolute inset-0 bg-gradient-to-t ${isDark ? 'from-black via-black/40 to-transparent' : 'from-slate-900/90 via-slate-900/20 to-transparent'}`} />
-                
-                {/* Year Badge */}
-                <div className="absolute top-6 right-6">
-                   <div className={`px-4 py-1.5 rounded-full backdrop-blur-md border ${isDark ? 'bg-black/30 border-white/20 text-white' : 'bg-white/90 border-white text-slate-900'}`}>
-                      <span className="text-[10px] font-black tracking-widest">{event.year}</span>
-                   </div>
-                </div>
-
-                {/* Overlay Content */}
-                <div className="absolute bottom-0 left-0 w-full p-8">
-                   <h3 className="text-3xl font-heading font-black uppercase italic tracking-tight mb-2 text-white leading-none shadow-black drop-shadow-lg">
-                      {event.name}
-                   </h3>
-                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 mb-6 drop-shadow-md">
-                      {event.tagline}
-                   </p>
-                   
-                   {/* Metrics Row (Compact) */}
-                   <div className="flex items-center gap-6 pt-6 border-t border-white/20">
-                      <div className="flex flex-col">
-                         <span className="text-[8px] font-black uppercase tracking-widest text-zinc-400 mb-1">Reach</span>
-                         <span className="text-lg font-heading font-black italic text-white">{event.metrics.reachLabel}</span>
-                      </div>
-                      <div className="w-px h-8 bg-white/20" />
-                      <div className="flex flex-col">
-                         <span className="text-[8px] font-black uppercase tracking-widest text-zinc-400 mb-1">Members</span>
-                         <span className="text-lg font-heading font-black italic text-white">{event.metrics.participants}</span>
-                      </div>
-                      
-                      {/* Action Arrow */}
-                      <div className={`ml-auto w-10 h-10 rounded-full flex items-center justify-center border transition-all ${isDark ? 'bg-white/10 border-white/20 text-white' : 'bg-white text-slate-900 border-white'}`}>
-                         <ArrowUpRight size={18} />
-                      </div>
-                   </div>
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
-        ))}
-      </div>
+    <div ref={containerRef} className="min-h-screen w-full flex flex-col pt-24 pb-6 px-6 bg-[#050505] text-white transition-colors duration-700">
       
-      <div className="mt-16 text-center">
-         <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">End of Records</p>
+      {/* Minimal Header */}
+      <header className="archive-header w-full mb-6 shrink-0">
+        <div>
+            <h1 className="text-[10px] font-black uppercase tracking-[0.4em] mb-1 opacity-50 text-cyan-500">Initiative Records</h1>
+            <h2 className="text-4xl font-heading font-black uppercase italic tracking-tighter">The Archive</h2>
+        </div>
+      </header>
+
+      {/* Flex Accordion - Expands on Tap */}
+      <div className="flex-1 flex flex-col gap-2 h-[70vh] w-full">
+        {FORTE_EVENTS.map((event) => {
+            const isExpanded = expandedId === event.id;
+            return (
+              <div 
+                  key={event.id}
+                  onClick={() => handleEventClick(event.id)}
+                  className={`archive-col relative h-full rounded-2xl overflow-hidden cursor-pointer border border-white/10 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isExpanded ? 'flex-[3]' : 'flex-1'}`}
+              >
+                  {/* Image Background */}
+                  <div className="absolute inset-0 bg-gray-900">
+                      <SmartImage 
+                          src={event.image} 
+                          alt={event.name} 
+                          className={`w-full h-full object-cover transition-all duration-1000 ease-out ${isExpanded ? 'opacity-100 scale-105' : 'opacity-60 scale-100'}`} 
+                      />
+                      <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-700 ${isExpanded ? 'opacity-30' : 'opacity-80'}`} />
+                  </div>
+
+                  {/* Content Overlay */}
+                  <div className="absolute inset-0 p-6 flex flex-col justify-end items-start z-10">
+                      <div className={`w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${isExpanded ? 'translate-y-0' : 'translate-y-8'}`}>
+                          <div className={`flex justify-between items-center mb-3 transition-opacity duration-500 delay-100 ${isExpanded ? 'opacity-100' : 'opacity-0'}`}>
+                              <span className="text-[10px] font-mono font-bold text-cyan-400 uppercase tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-md border border-cyan-500/30">
+                                  {event.year}
+                              </span>
+                              <div className="p-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+                                  <ArrowUpRight className="text-white" size={16} />
+                              </div>
+                          </div>
+                          
+                          <h3 className="text-3xl font-heading font-black uppercase italic tracking-tighter text-white leading-[0.9] mb-2 drop-shadow-xl whitespace-nowrap overflow-hidden text-ellipsis">
+                              {event.name}
+                          </h3>
+                          
+                          <p className={`text-[10px] font-medium text-zinc-300/90 uppercase tracking-wider transition-opacity duration-500 delay-200 line-clamp-2 max-w-lg ${isExpanded ? 'opacity-100' : 'opacity-0'}`}>
+                              {event.tagline}
+                          </p>
+                      </div>
+                  </div>
+
+                  {/* Expanded Border Highlight */}
+                  <div className={`absolute inset-0 border-2 rounded-2xl transition-all duration-500 pointer-events-none ${isExpanded ? 'border-cyan-500/50' : 'border-cyan-500/0'}`} />
+              </div>
+            );
+        })}
       </div>
-      <div className="h-20" />
     </div>
   );
 };
